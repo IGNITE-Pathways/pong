@@ -45,8 +45,8 @@ def draw_text(surf, text, size, x, y, color):
     surf.blit(text_surface, text_rect)
 
 # Capture player names
-def capture_player_names(prompt, screen, width, height, font_name, color_inactive, color_active, BLACK):
-    input_box = pygame.Rect(width // 4, height // 2 - 30, width // 2, 30)
+def capture_player_names(prompt, screen, width, height, font_name, color_inactive, color_active, BLACK, WHITE):
+    input_box = pygame.Rect(width // 2 - 150, height // 2 - 15, 300, 30)
     color = color_inactive
     active = False
     text = ''
@@ -74,9 +74,7 @@ def capture_player_names(prompt, screen, width, height, font_name, color_inactiv
         screen.fill(BLACK)
         draw_text(screen, prompt, 32, width // 2, height // 2 - 70, WHITE)
         txt_surface = pygame.font.Font(font_name, 32).render(text, True, color)
-        width_txt = max(200, txt_surface.get_width()+10)
-        input_box.w = width_txt
-        screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
+        screen.blit(txt_surface, (input_box.x + 5, input_box.y + 5))
         pygame.draw.rect(screen, color, input_box, 2)
         pygame.display.flip()
         pygame.time.Clock().tick(30)
@@ -89,8 +87,8 @@ color_inactive = pygame.Color('lightskyblue3')
 color_active = pygame.Color('dodgerblue2')
 
 # Get player names
-player1_name = capture_player_names("Player 1 Name:", screen, width, height, font_name, color_inactive, color_active, BLACK)
-player2_name = capture_player_names("Player 2 Name:", screen, width, height, font_name, color_inactive, color_active, BLACK)
+player1_name = capture_player_names("Player 1 Name:", screen, width, height, font_name, color_inactive, color_active, BLACK, WHITE)
+player2_name = capture_player_names("Player 2 Name:", screen, width, height, font_name, color_inactive, color_active, BLACK, WHITE)
 
 # Game constants
 BALL_SIZE = 20
