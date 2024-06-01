@@ -113,22 +113,6 @@ while running:
             best_time = elapsed_time
         start_time = time.time()
 
-    # Check for winner
-    if left_score == max_score:
-        display_text(f"{left_player} Wins!")
-        left_score = 0
-        right_score = 0
-        ball_speed_x = 4
-        ball_speed_y = 4
-        start_time = time.time()
-    elif right_score == max_score:
-        display_text(f"{right_player} Wins!")
-        left_score = 0
-        right_score = 0
-        ball_speed_x = 4
-        ball_speed_y = 4
-        start_time = time.time()
-
     # Clear the screen
     screen.fill(black)
 
@@ -164,6 +148,22 @@ while running:
     # Display round info
     round_text = small_font.render(f"Rounds to Win: {max_score}", True, white)
     screen.blit(round_text, (screen_width // 2 - 100, 10))
+
+    # Check for winner
+    if left_score == max_score:
+        display_text(f"{left_player} Wins!")
+        left_score = 0
+        right_score = 0
+        ball_speed_x = 4
+        ball_speed_y = 4
+        start_time = time.time()
+    elif right_score == max_score:
+        display_text(f"{right_player} Wins!")
+        left_score = 0
+        right_score = 0
+        ball_speed_x = 4
+        ball_speed_y = 4
+        start_time = time.time()
 
     # Update the display
     pygame.display.flip()
