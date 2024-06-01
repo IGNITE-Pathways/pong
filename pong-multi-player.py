@@ -143,8 +143,8 @@ while running:
     # Display player names
     left_player_text = small_font.render(left_player, True, white)
     right_player_text = small_font.render(right_player, True, white)
-    screen.blit(left_player_text, (50, 10))
-    screen.blit(right_player_text, (screen_width - 150, 10))
+    screen.blit(left_player_text, (50, screen_height - 50))
+    screen.blit(right_player_text, (screen_width - 150, screen_height - 50))
 
     # Display scores
     left_text = font.render(str(left_score), True, white)
@@ -160,6 +160,10 @@ while running:
     # Display best time
     best_time_text = small_font.render(f"Best Time: {best_time}s", True, white)
     screen.blit(best_time_text, (screen_width // 2 - 70, screen_height - 40))
+
+    # Display round info
+    round_text = small_font.render(f"Rounds to Win: {max_score}", True, white)
+    screen.blit(round_text, (screen_width // 2 - 100, 10))
 
     # Update the display
     pygame.display.flip()
