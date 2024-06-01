@@ -1,6 +1,5 @@
 import pygame
 import sys
-import os
 
 # Initialize Pygame
 pygame.init()
@@ -36,18 +35,16 @@ pygame.time.wait(3000)
 font_name = pygame.font.match_font('arial')  # Replace 'arial' with the font name used in the image if available
 
 # Function to draw text on the screen
-def draw_text(surf, text, size, x, y):
+def draw_text(surf, text, size, x, y, color):
     font = pygame.font.Font(font_name, size)
-    text_surface = font.render(text, True, WHITE)
+    text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
     surf.blit(text_surface, text_rect)
 
 # Capture player names
-def capture_player_names():
+def capture_player_names(prompt, screen, width, height, font_name, color_inactive, color_active, BLACK):
     input_box = pygame.Rect(width // 4, height // 2 - 30, width // 2, 30)
-    color_inactive = pygame.Color('lightskyblue3')
-    color_active = pygame.Color('dodgerblue2')
     color = color_inactive
     active = False
     text = ''
@@ -73,6 +70,7 @@ def capture_player_names():
                         text += event.unicode
 
         screen.fill(BLACK)
+        draw_text(screen, prompt, 32, width // 2, height // 2 - 70, WHITE)
         txt_surface = pygame.font.Font(font_name, 32).render(text, True, color)
         width_txt = max(200, txt_surface.get_width()+10)
         input_box.w = width_txt
@@ -82,12 +80,17 @@ def capture_player_names():
         pygame.time.Clock().tick(30)
     return text
 
-player1_name = capture_player_names()
-player2_name = capture_player_names()
-
-# Game constants
+# Define colors
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
+color_inactive = pygame.Color('lightskyblue3')
+color_active = pygame.Color('dodgerblue2')
+
+# Get player names
+player1_name = capture_player_names("Player 1 Name:", screen, width, height, font_name, color_inactive, color_active, BLACK)
+player2_name = capture_player_names("Player 2 Name:", screen, width, height, font_name, color_inactive, color_active, BLACK)
+
+# Game constants
 BALL_SIZE = 20
 PADDLE_WIDTH = 10
 PADDLE_HEIGHT = 100
@@ -170,8 +173,8 @@ while running:
     pygame.draw.circle(screen, WHITE, ball_pos, BALL_SIZE // 2)
 
     # Draw player names
-    draw_text(screen, player1_name, 20, width // 4, 10)
-    draw_text(screen, player2_name, 20, 3 * width // 4, 10)
+    draw_text(screen, player1_name, 20, width // 4, 10, WHITE)
+    draw_text(screen, player2_name, 20, 3 * width // 4, 10, WHITE)
 
     # Draw score bars
     player1_score_height = (player1_score / max_score) * height
