@@ -13,12 +13,12 @@ white = (255, 255, 255)
 black = (0, 0, 0)
 
 # Paddle dimensions
-paddle_width = 10
-paddle_height = 100
+paddle_width = 20
+paddle_height = 150
 
 # Ball dimensions
-ball_width = 10
-ball_height = 10
+ball_width = 20
+ball_height = 20
 
 # Speeds
 paddle_speed = 6
@@ -35,6 +35,25 @@ computer_paddle = pygame.Rect(20, screen_height // 2 - paddle_height // 2, paddl
 
 # Ball position
 ball = pygame.Rect(screen_width // 2 - ball_width // 2, screen_height // 2 - ball_height // 2, ball_width, ball_height)
+
+# Game variables
+player_score = 0
+computer_score = 0
+max_score = 5
+font = pygame.font.Font(None, 74)
+
+# Function to draw the net
+def draw_net():
+    for i in range(0, screen_height, 20):
+        pygame.draw.line(screen, white, (screen_width // 2, i), (screen_width // 2, i + 10))
+
+# Function to display text
+def display_text(text):
+    text_surface = font.render(text, True, white)
+    text_rect = text_surface.get_rect(center=(screen_width // 2, screen_height // 2))
+    screen.blit(text_surface, text_rect)
+    pygame.display.flip()
+    pygame.time.delay(2000)
 
 # Game loop
 running = True
@@ -72,18 +91,43 @@ while running:
         ball_speed_x *= -1
 
     # Scoring and resetting ball
-    if ball.left <= 0 or ball.right >= screen_width:
+    if ball.left <= 0:
+        player_score += 1
+        ball.x, ball.y = screen_width // 2 - ball_width // 2, screen_height // 2 - ball_height // 2
+        ball_speed_x *= random.choice((-1, 1))
+        ball_speed_y *= random.choice((-1, 1))
+    if ball.right >= screen_width:
+        computer_score += 1
         ball.x, ball.y = screen_width // 2 - ball_width // 2, screen_height // 2 - ball_height // 2
         ball_speed_x *= random.choice((-1, 1))
         ball_speed_y *= random.choice((-1, 1))
 
+    # Check for winner
+    if player_score == max_score:
+        display_text("You Win!")
+        player_score = 0
+        computer_score = 0
+    elif computer_score == max_score:
+        display_text("Computer Wins!")
+        player_score = 0
+        computer_score = 0
+
     # Clear the screen
     screen.fill(black)
+
+    # Draw net
+    draw_net()
 
     # Draw paddles and ball
     pygame.draw.rect(screen, white, player_paddle)
     pygame.draw.rect(screen, white, computer_paddle)
     pygame.draw.ellipse(screen, white, ball)
+
+    # Display scores
+    player_text = font.render(str(player_score), True, white)
+    screen.blit(player_text, (screen_width // 2 + 20, 10))
+    computer_text = font.render(str(computer_score), True, white)
+    screen.blit(computer_text, (screen_width // 2 - 40, 10))
 
     # Update the display
     pygame.display.flip()
