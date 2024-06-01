@@ -5,6 +5,9 @@ import os
 # Initialize Pygame
 pygame.init()
 
+# Load custom font
+font_path = os.path.join(os.path.dirname(__file__), 'Pong-Game.ttf')
+
 # Load splash image
 splash_image_path = os.path.join(os.path.dirname(__file__), 'pong.webp')
 splash_image = pygame.image.load(splash_image_path)
@@ -33,24 +36,22 @@ pygame.display.flip()
 # Wait for a few seconds
 pygame.time.wait(3000)
 
-# Fonts
-font_name = pygame.font.match_font('arial')  # Replace 'arial' with the font name used in the image if available
-
 # Function to draw text on the screen
 def draw_text(surf, text, size, x, y, color):
-    font = pygame.font.Font(font_name, size)
+    font = pygame.font.Font(font_path, size)
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x, y)
     surf.blit(text_surface, text_rect)
 
 # Capture player names
-def capture_player_names(prompt, screen, width, height, font_name, color_inactive, color_active, BLACK, WHITE):
+def capture_player_names(prompt, screen, width, height, font_path, color_inactive, color_active, BLACK, WHITE):
     input_box = pygame.Rect(width // 2 - 150, height // 2 - 15, 300, 30)
-    color = color_inactive
-    active = False
+    color = color_active
+    active = True
     text = ''
     done = False
+
     while not done:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -58,7 +59,7 @@ def capture_player_names(prompt, screen, width, height, font_name, color_inactiv
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if input_box.collidepoint(event.pos):
-                    active = not active
+                    active = True
                 else:
                     active = False
                 color = color_active if active else color_inactive
@@ -73,7 +74,7 @@ def capture_player_names(prompt, screen, width, height, font_name, color_inactiv
 
         screen.fill(BLACK)
         draw_text(screen, prompt, 32, width // 2, height // 2 - 70, WHITE)
-        txt_surface = pygame.font.Font(font_name, 32).render(text, True, color)
+        txt_surface = pygame.font.Font(font_path, 32).render(text, True, color)
         screen.blit(txt_surface, (input_box.x + 5, input_box.y + 5))
         pygame.draw.rect(screen, color, input_box, 2)
         pygame.display.flip()
@@ -87,8 +88,8 @@ color_inactive = pygame.Color('lightskyblue3')
 color_active = pygame.Color('dodgerblue2')
 
 # Get player names
-player1_name = capture_player_names("Player 1 Name:", screen, width, height, font_name, color_inactive, color_active, BLACK, WHITE)
-player2_name = capture_player_names("Player 2 Name:", screen, width, height, font_name, color_inactive, color_active, BLACK, WHITE)
+player1_name = capture_player_names("Player 1 Name:", screen, width, height, font_path, color_inactive, color_active, BLACK, WHITE)
+player2_name = capture_player_names("Player 2 Name:", screen, width, height, font_path, color_inactive, color_active, BLACK, WHITE)
 
 # Game constants
 BALL_SIZE = 20
@@ -191,8 +192,8 @@ while running:
     pygame.draw.circle(screen, WHITE, ball_pos, BALL_SIZE // 2)
 
     # Draw player names
-    draw_text(screen, player1_name, 20, width // 4, 10, WHITE)
-    draw_text(screen, player2_name, 20, 3 * width // 4, 10, WHITE)
+    draw_text(screen, player1_name, 40, width // 4, 10, WHITE)
+    draw_text(screen, player2_name, 40, 3 * width // 4, 10, WHITE)
 
     # Draw score bars and scores
     score_bar_width = width // 4 - 20
@@ -200,16 +201,16 @@ while running:
     player2_score_width = (player2_score / max_score) * score_bar_width
 
     # Draw the outline of the score bar
-    pygame.draw.rect(screen, WHITE, (width // 4 - score_bar_width // 2, 40, score_bar_width, 10), 2)
-    pygame.draw.rect(screen, WHITE, (3 * width // 4 - score_bar_width // 2, 40, score_bar_width, 10), 2)
+    pygame.draw.rect(screen, WHITE, (width // 4 - score_bar_width // 2, 60, score_bar_width, 20), 2)
+    pygame.draw.rect(screen, WHITE, (3 * width // 4 - score_bar_width // 2, 60, score_bar_width, 20), 2)
 
     # Draw the filled score bar
-    pygame.draw.rect(screen, WHITE, (width // 4 - score_bar_width // 2, 40, player1_score_width, 10))
-    pygame.draw.rect(screen, WHITE, (3 * width // 4 - score_bar_width // 2, 40, player2_score_width, 10))
+    pygame.draw.rect(screen, WHITE, (width // 4 - score_bar_width // 2, 60, player1_score_width, 20))
+    pygame.draw.rect(screen, WHITE, (3 * width // 4 - score_bar_width // 2, 60, player2_score_width, 20))
 
     # Draw the actual scores
-    draw_text(screen, str(player1_score), 20, width // 4, 60, WHITE)
-    draw_text(screen, str(player2_score), 20, 3 * width // 4, 60, WHITE)
+    draw_text(screen, str(player1_score), 30, width // 4, 90, WHITE)
+    draw_text(screen, str(player2_score), 30, 3 * width // 4, 90, WHITE)
 
     # Update display
     pygame.display.flip()
