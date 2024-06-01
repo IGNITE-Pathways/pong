@@ -140,6 +140,12 @@ while running:
     pygame.draw.rect(screen, white, right_paddle)
     pygame.draw.ellipse(screen, white, ball)
 
+    # Display player names
+    left_player_text = small_font.render(left_player, True, white)
+    right_player_text = small_font.render(right_player, True, white)
+    screen.blit(left_player_text, (50, 10))
+    screen.blit(right_player_text, (screen_width - 150, 10))
+
     # Display scores
     left_text = font.render(str(left_score), True, white)
     screen.blit(left_text, (screen_width // 4, 10))
