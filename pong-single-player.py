@@ -1,5 +1,6 @@
 import pygame
 import random
+import time
 
 # Initialize Pygame
 pygame.init()
@@ -22,8 +23,8 @@ ball_height = 20
 
 # Speeds
 paddle_speed = 6
-ball_speed_x = 4
-ball_speed_y = 4
+initial_ball_speed_x = 4
+initial_ball_speed_y = 4
 
 # Create the screen
 screen = pygame.display.set_mode((screen_width, screen_height))
@@ -41,6 +42,11 @@ player_score = 0
 computer_score = 0
 max_score = 5
 font = pygame.font.Font(None, 74)
+small_font = pygame.font.Font(None, 36)
+ball_speed_x = initial_ball_speed_x
+ball_speed_y = initial_ball_speed_y
+start_time = time.time()
+best_time = 0
 
 # Function to draw the net
 def draw_net():
@@ -94,23 +100,37 @@ while running:
     if ball.left <= 0:
         player_score += 1
         ball.x, ball.y = screen_width // 2 - ball_width // 2, screen_height // 2 - ball_height // 2
-        ball_speed_x *= random.choice((-1, 1))
-        ball_speed_y *= random.choice((-1, 1))
+        ball_speed_x = initial_ball_speed_x * random.choice((-1, 1))
+        ball_speed_y = initial_ball_speed_y * random.choice((-1, 1))
+        elapsed_time = int(time.time() - start_time)
+        if elapsed_time > best_time:
+            best_time = elapsed_time
+        start_time = time.time()
     if ball.right >= screen_width:
         computer_score += 1
         ball.x, ball.y = screen_width // 2 - ball_width // 2, screen_height // 2 - ball_height // 2
-        ball_speed_x *= random.choice((-1, 1))
-        ball_speed_y *= random.choice((-1, 1))
+        ball_speed_x = initial_ball_speed_x * random.choice((-1, 1))
+        ball_speed_y = initial_ball_speed_y * random.choice((-1, 1))
+        elapsed_time = int(time.time() - start_time)
+        if elapsed_time > best_time:
+            best_time = elapsed_time
+        start_time = time.time()
 
     # Check for winner
     if player_score == max_score:
         display_text("You Win!")
         player_score = 0
         computer_score = 0
+        ball_speed_x = initial_ball_speed_x
+        ball_speed_y = initial_ball_speed_y
+        start_time = time.time()
     elif computer_score == max_score:
         display_text("Computer Wins!")
         player_score = 0
         computer_score = 0
+        ball_speed_x = initial_ball_speed_x
+        ball_speed_y = initial_ball_speed_y
+        start_time = time.time()
 
     # Clear the screen
     screen.fill(black)
@@ -128,6 +148,15 @@ while running:
     screen.blit(player_text, (screen_width // 2 + 20, 10))
     computer_text = font.render(str(computer_score), True, white)
     screen.blit(computer_text, (screen_width // 2 - 40, 10))
+
+    # Display running clock
+    elapsed_time = int(time.time() - start_time)
+    time_text = small_font.render(f"Time: {elapsed_time}s", True, white)
+    screen.blit(time_text, (screen_width // 2 - 50, screen_height - 80))
+
+    # Display best time
+    best_time_text = small_font.render(f"Best Time: {best_time}s", True, white)
+    screen.blit(best_time_text, (screen_width // 2 - 70, screen_height - 40))
 
     # Update the display
     pygame.display.flip()
