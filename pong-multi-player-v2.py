@@ -1,11 +1,13 @@
 import pygame
 import sys
+import os
 
 # Initialize Pygame
 pygame.init()
 
 # Load splash image
-splash_image = pygame.image.load('/mnt/data/pong.webp')
+splash_image_path = os.path.join(os.path.dirname(__file__), 'pong.webp')
+splash_image = pygame.image.load(splash_image_path)
 
 # Original dimensions of the splash image
 original_width, original_height = splash_image.get_rect().size
@@ -96,13 +98,13 @@ PADDLE_WIDTH = 10
 PADDLE_HEIGHT = 100
 
 # Score
-max_score = 10
+max_score = 5
 player1_score = 0
 player2_score = 0
 
 # Game variables
 ball_pos = [width // 2, height // 2]
-ball_vel = [2, 2]
+ball_vel = [3, 3]
 paddle1_pos = height // 2 - PADDLE_HEIGHT // 2
 paddle2_pos = height // 2 - PADDLE_HEIGHT // 2
 paddle1_vel = 0
@@ -112,6 +114,13 @@ paddle_speed = 6
 # Main game loop
 running = True
 clock = pygame.time.Clock()
+
+def announce_winner(winner_name):
+    screen.fill(BLACK)
+    draw_text(screen, f"{winner_name} Wins!", 64, width // 2, height // 2 - 32, WHITE)
+    pygame.display.flip()
+    pygame.time.wait(3000)
+
 while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -153,14 +162,25 @@ while running:
         ball_pos[0] >= width - PADDLE_WIDTH - BALL_SIZE // 2 and
         paddle2_pos < ball_pos[1] < paddle2_pos + PADDLE_HEIGHT):
         ball_vel[0] = -ball_vel[0]
+        ball_vel[0] *= 1.1  # Increase ball speed after each paddle hit
+        ball_vel[1] *= 1.1
 
     # Score update
     if ball_pos[0] <= 0:
         player2_score += 1
         ball_pos = [width // 2, height // 2]
+        ball_vel = [3, 3]  # Reset ball speed
     elif ball_pos[0] >= width:
         player1_score += 1
         ball_pos = [width // 2, height // 2]
+        ball_vel = [3, 3]  # Reset ball speed
+
+    if player1_score >= max_score:
+        announce_winner(player1_name)
+        running = False
+    elif player2_score >= max_score:
+        announce_winner(player2_name)
+        running = False
 
     # Clear screen
     screen.fill(BLACK)
@@ -176,11 +196,22 @@ while running:
     draw_text(screen, player1_name, 20, width // 4, 10, WHITE)
     draw_text(screen, player2_name, 20, 3 * width // 4, 10, WHITE)
 
-    # Draw score bars
-    player1_score_height = (player1_score / max_score) * height
-    player2_score_height = (player2_score / max_score) * height
-    pygame.draw.rect(screen, WHITE, (width // 4 - 10, height - player1_score_height, 20, player1_score_height))
-    pygame.draw.rect(screen, WHITE, (3 * width // 4 - 10, height - player2_score_height, 20, player2_score_height))
+    # Draw score bars and scores
+    score_bar_width = width // 4 - 20
+    player1_score_width = (player1_score / max_score) * score_bar_width
+    player2_score_width = (player2_score / max_score) * score_bar_width
+
+    # Draw the outline of the score bar
+    pygame.draw.rect(screen, WHITE, (width // 4 - score_bar_width // 2, 40, score_bar_width, 10), 2)
+    pygame.draw.rect(screen, WHITE, (3 * width // 4 - score_bar_width // 2, 40, score_bar_width, 10), 2)
+
+    # Draw the filled score bar
+    pygame.draw.rect(screen, WHITE, (width // 4 - score_bar_width // 2, 40, player1_score_width, 10))
+    pygame.draw.rect(screen, WHITE, (3 * width // 4 - score_bar_width // 2, 40, player2_score_width, 10))
+
+    # Draw the actual scores
+    draw_text(screen, str(player1_score), 20, width // 4, 60, WHITE)
+    draw_text(screen, str(player2_score), 20, 3 * width // 4, 60, WHITE)
 
     # Update display
     pygame.display.flip()
