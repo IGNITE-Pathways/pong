@@ -196,6 +196,10 @@ def game():
         # Clear screen
         screen.fill(BLACK)
 
+        # Draw vertical separator
+        for i in range(0, height, 20):
+            pygame.draw.rect(screen, WHITE, (width // 2 - 1, i, 2, 10))
+
         # Draw paddles
         pygame.draw.rect(screen, WHITE, (0, paddle1_pos, PADDLE_WIDTH, PADDLE_HEIGHT))
         pygame.draw.rect(screen, WHITE, (width - PADDLE_WIDTH, paddle2_pos, PADDLE_WIDTH, PADDLE_HEIGHT))
