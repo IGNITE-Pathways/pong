@@ -5,13 +5,22 @@ import sys
 pygame.init()
 
 # Load splash image
-splash_image = pygame.image.load('/mnt/data/pong.webp')
+splash_image = pygame.image.load('pong.webp')
 
-# Get dimensions of the splash image
-splash_rect = splash_image.get_rect()
-width, height = splash_rect.size
+# Original dimensions of the splash image
+original_width, original_height = splash_image.get_rect().size
 
-# Set up display
+# Desired height
+height = 600
+
+# Calculate new width to maintain aspect ratio
+aspect_ratio = original_width / original_height
+width = int(height * aspect_ratio)
+
+# Scale splash image to new dimensions
+splash_image = pygame.transform.scale(splash_image, (width, height))
+
+# Set up display with new dimensions
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('Pong Game')
 
